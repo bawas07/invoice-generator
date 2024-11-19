@@ -246,7 +246,8 @@ const invoice = ref({
 const currencies = [
   { code: 'USD', symbol: '$' },
   { code: 'EUR', symbol: '€' },
-  { code: 'GBP', symbol: '£' }
+  { code: 'GBP', symbol: '£' },
+  { code: 'IDR', symbol: 'Rp' }
 ]
 
 const commonUnits = [
