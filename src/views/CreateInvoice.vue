@@ -28,6 +28,71 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Form Section -->
           <div class="space-y-6">
+
+            <!-- Company Information -->
+            <div class="bg-white shadow rounded-lg p-6 space-y-6">
+              <h2 class="text-xl font-semibold text-oxford-400">Company Information</h2>
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label for="companyName" class="block text-sm font-medium text-oxford-300">Company Name</label>
+                  <input
+                    type="text"
+                    id="companyName"
+                    v-model="invoice.company.name"
+                    required
+                    class="input"
+                  />
+                </div>
+                <div>
+                  <label for="companyEmail" class="block text-sm font-medium text-oxford-300">Company Email</label>
+                  <input
+                    type="email"
+                    id="companyEmail"
+                    v-model="invoice.company.email"
+                    required
+                    class="input"
+                  />
+                </div>
+                <div>
+                  <label for="companyAddress" class="block text-sm font-medium text-oxford-300">Company Address</label>
+                  <input
+                    type="text"
+                    id="companyAddress"
+                    v-model="invoice.company.address"
+                    required
+                    class="input"
+                  />
+                </div>
+                <div>
+                  <label for="companyPhone" class="block text-sm font-medium text-oxford-300">Company Phone</label>
+                  <input
+                    type="tel"
+                    id="companyPhone"
+                    v-model="invoice.company.phone"
+                    class="input"
+                  />
+                </div>
+                <div>
+                  <label for="companyTaxId" class="block text-sm font-medium text-oxford-300">Tax ID</label>
+                  <input
+                    type="text"
+                    id="companyTaxId"
+                    v-model="invoice.company.taxId"
+                    class="input"
+                  />
+                </div>
+                <div>
+                  <label for="companyWebsite" class="block text-sm font-medium text-oxford-300">Website</label>
+                  <input
+                    type="url"
+                    id="companyWebsite"
+                    v-model="invoice.company.website"
+                    class="input"
+                  />
+                </div>
+              </div>
+            </div>
+
             <!-- Client Information -->
             <div class="bg-white shadow rounded-lg p-6 space-y-6">
               <h2 class="text-xl font-semibold text-oxford-400">Invoice Information</h2>
@@ -192,6 +257,7 @@
           <!-- Preview Section -->
           <div class="lg:sticky lg:top-6 space-y-6">
             <InvoicePreview
+              :company="invoice.company"
               :client="invoice.client"
               :items="invoice.items"
               :currency="invoice.currency"
@@ -218,6 +284,14 @@ import InvoicePreview from '../components/InvoicePreview.vue'
 const router = useRouter()
 
 const invoice = ref({
+  company: {
+    name: '',
+    email: '',
+    address: '',
+    phone: '',
+    taxId: '',
+    website: ''
+  },
   client: {
     name: '',
     email: '',

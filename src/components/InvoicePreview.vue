@@ -29,10 +29,12 @@
         <div>
           <h3 class="font-medium text-oxford-400 mb-2">From</h3>
           <div class="text-sm space-y-1">
-            <p class="font-medium text-oxford-400">Your Company Name</p>
-            <p class="text-oxford-200">123 Your Street</p>
-            <p class="text-oxford-200">Your City, ST 12345</p>
-            <p class="text-oxford-200">your@email.com</p>
+            <p class="font-medium text-oxford-400">{{ props.company.name || 'Your Company Name' }}</p>
+            <p class="text-oxford-200">{{ props.company.address || '123 Your Street' }}</p>
+            <p v-if="props.company.phone" class="text-oxford-200">{{ props.company.phone }}</p>
+            <p class="text-oxford-200">{{ props.company.email || 'your@email.com' }}</p>
+            <p v-if="props.company.website" class="text-oxford-200">{{ props.company.website }}</p>
+            <p v-if="props.company.taxId" class="text-oxford-200">Tax ID: {{ props.company.taxId }}</p>
           </div>
         </div>
         <div>
@@ -40,6 +42,7 @@
           <div class="text-sm space-y-1">
             <p class="font-medium text-oxford-400">{{ props.client.name }}</p>
             <p class="text-oxford-200">{{ props.client.email }}</p>
+            <p class="text-oxford-200">{{ props.client.address }}</p>
           </div>
         </div>
       </div>
@@ -119,6 +122,10 @@
 import { computed } from 'vue'
 
 const props = defineProps({
+  company: {
+    type: Object,
+    required: true
+  },
   client: {
     type: Object,
     required: true
