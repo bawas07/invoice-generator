@@ -229,13 +229,11 @@
                         </div>
                         <input
                           :id="'item-price-' + index"
-                          type="number"
-                          v-model.number="item.price"
-                          min="0"
-                          step="0.01"
+                          type="text"
+                          :value="formatCurrency(item.price || 0).slice(1)"
+                          @input="e => updatePrice(e, item)"
                           required
                           class="input pl-7"
-                          @input="calculateItemSubtotal(item)"
                         />
                       </div>
                     </div>
@@ -363,7 +361,22 @@ const total = computed(() => {
 })
 
 function formatCurrency(amount) {
-  return `${invoice.value.currency.symbol}${amount.toFixed(2)}`
+  return `${invoice.value.currency.symbol}${amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`
+}
+
+function updatePrice(event, item) {
+  // Remove any non-numeric characters except decimal point
+  const value = event.target.value.replace(/[^0-9.]/g, '')
+  // Parse the cleaned value to a number
+  const numValue = parseFloat(value)
+  // Update the item price if it's a valid number
+  if (!isNaN(numValue)) {
+    item.price = numValue
+    calculateItemSubtotal(item)
+  }
 }
 
 async function handleSubmit() {
