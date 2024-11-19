@@ -1,16 +1,25 @@
 <template>
-  <div class="bg-white shadow-sm border rounded-lg">
-    <div class="p-8">
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <!-- Preview Header -->
+    <div class="bg-oxford-400 text-white px-6 py-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold">Invoice Preview</h2>
+        <span class="text-oxford-100">{{ formatDate(props.date) }}</span>
+      </div>
+    </div>
+
+    <!-- Preview Content -->
+    <div class="p-6 space-y-6">
       <!-- Header -->
       <div class="flex justify-between items-start mb-8">
         <div class="space-y-2">
-          <h1 class="text-2xl font-bold text-gray-900">INVOICE</h1>
-          <div class="text-sm text-gray-500"># {{ invoiceNumber || 'INV-001' }}</div>
+          <h1 class="text-2xl font-bold text-oxford-400">INVOICE</h1>
+          <div class="text-sm text-oxford-300"># {{ props.number }}</div>
         </div>
         <div class="text-right space-y-1">
-          <div class="text-sm text-gray-500">Balance Due</div>
-          <div class="text-2xl font-bold text-gray-900">
-            {{ currency.symbol }}{{ calculateTotal.toFixed(2) }}
+          <div class="text-sm text-oxford-300">Balance Due</div>
+          <div class="text-2xl font-bold text-oxford-400">
+            {{ formatCurrency(props.total) }}
           </div>
         </div>
       </div>
@@ -18,19 +27,19 @@
       <!-- Bill From/To -->
       <div class="grid grid-cols-2 gap-8 mb-8">
         <div>
-          <h3 class="font-medium text-gray-500 mb-2">From</h3>
+          <h3 class="font-medium text-oxford-400 mb-2">From</h3>
           <div class="text-sm space-y-1">
-            <p class="font-medium text-gray-900">Your Company Name</p>
-            <p class="text-gray-600">123 Your Street</p>
-            <p class="text-gray-600">Your City, ST 12345</p>
-            <p class="text-gray-600">your@email.com</p>
+            <p class="font-medium text-oxford-400">Your Company Name</p>
+            <p class="text-oxford-200">123 Your Street</p>
+            <p class="text-oxford-200">Your City, ST 12345</p>
+            <p class="text-oxford-200">your@email.com</p>
           </div>
         </div>
         <div>
-          <h3 class="font-medium text-gray-500 mb-2">Bill To</h3>
+          <h3 class="font-medium text-oxford-400 mb-2">Bill To</h3>
           <div class="text-sm space-y-1">
-            <p class="font-medium text-gray-900">{{ client.name }}</p>
-            <p class="text-gray-600">{{ client.email }}</p>
+            <p class="font-medium text-oxford-400">{{ props.client.name }}</p>
+            <p class="text-oxford-200">{{ props.client.email }}</p>
           </div>
         </div>
       </div>
@@ -38,75 +47,68 @@
       <!-- Dates -->
       <div class="grid grid-cols-2 gap-8 mb-8 text-sm">
         <div>
-          <div class="font-medium text-gray-500 mb-2">Issue Date</div>
-          <div class="text-gray-900">{{ new Date().toLocaleDateString() }}</div>
+          <div class="font-medium text-oxford-400 mb-2">Issue Date</div>
+          <div class="text-oxford-400">{{ formatDate(props.date) }}</div>
         </div>
         <div>
-          <div class="font-medium text-gray-500 mb-2">Due Date</div>
-          <div class="text-gray-900">{{ new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString() }}</div>
+          <div class="font-medium text-oxford-400 mb-2">Due Date</div>
+          <div class="text-oxford-400">{{ formatDate(props.dueDate) }}</div>
         </div>
       </div>
 
       <!-- Items Table -->
-      <div class="mb-8">
-        <table class="w-full text-sm">
+      <div class="mt-8">
+        <table class="min-w-full divide-y divide-oxford-100">
           <thead>
-            <tr class="border-b border-gray-200">
-              <th class="py-3 text-left font-medium text-gray-500">Item</th>
-              <th class="py-3 text-right font-medium text-gray-500">Quantity</th>
-              <th class="py-3 text-right font-medium text-gray-500">Rate</th>
-              <th class="py-3 text-right font-medium text-gray-500">Amount</th>
+            <tr>
+              <th class="px-3 py-3 text-left text-xs font-medium text-oxford-300 uppercase tracking-wider">Item</th>
+              <th class="px-3 py-3 text-right text-xs font-medium text-oxford-300 uppercase tracking-wider">Quantity</th>
+              <th class="px-3 py-3 text-right text-xs font-medium text-oxford-300 uppercase tracking-wider">Rate</th>
+              <th class="px-3 py-3 text-right text-xs font-medium text-oxford-300 uppercase tracking-wider">Amount</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="item in items" :key="item.name" class="border-b border-gray-100">
-              <td class="py-4">
-                <div class="font-medium text-gray-900">{{ item.name }}</div>
-                <div class="text-gray-500">{{ item.description }}</div>
+          <tbody class="bg-white divide-y divide-oxford-100">
+            <tr v-for="item in props.items" :key="item.name">
+              <td class="px-3 py-4 text-sm text-oxford-400">
+                <div class="font-medium">{{ item.name }}</div>
+                <div class="text-oxford-200">{{ item.description }}</div>
               </td>
-              <td class="py-4 text-right text-gray-900">
-                {{ item.quantity }} {{ item.unit === 'custom' ? item.customUnit : item.unit }}
-              </td>
-              <td class="py-4 text-right text-gray-900">
-                {{ currency.symbol }}{{ item.price.toFixed(2) }}
-              </td>
-              <td class="py-4 text-right text-gray-900">
-                {{ currency.symbol }}{{ (item.quantity * item.price).toFixed(2) }}
-              </td>
+              <td class="px-3 py-4 text-sm text-oxford-300 text-right">{{ item.quantity }} {{ item.unit === 'custom' ? item.customUnit : item.unit }}</td>
+              <td class="px-3 py-4 text-sm text-oxford-300 text-right">{{ formatCurrency(item.price) }}</td>
+              <td class="px-3 py-4 text-sm text-oxford-300 text-right">{{ formatCurrency(item.quantity * item.price) }}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <!-- Totals -->
-      <div class="flex justify-end">
-        <div class="w-64 space-y-3">
-          <div class="flex justify-between text-sm">
-            <div class="text-gray-500">Subtotal</div>
-            <div class="text-gray-900">{{ currency.symbol }}{{ calculateSubtotal.toFixed(2) }}</div>
+      <div class="mt-8 border-t border-oxford-100 pt-8">
+        <div class="space-y-4">
+          <div class="flex justify-between text-oxford-300">
+            <span>Subtotal:</span>
+            <span>{{ formatCurrency(props.subtotal) }}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <div class="text-gray-500">Tax ({{ taxRate }}%)</div>
-            <div class="text-gray-900">{{ currency.symbol }}{{ calculateTax.toFixed(2) }}</div>
+          <div class="flex justify-between text-oxford-300">
+            <span>Tax ({{ props.taxRate }}%):</span>
+            <span>{{ formatCurrency(props.taxAmount) }}</span>
           </div>
-          <div class="flex justify-between font-medium pt-2 border-t border-gray-200">
-            <div class="text-gray-900">Total</div>
-            <div class="text-gray-900">{{ currency.symbol }}{{ calculateTotal.toFixed(2) }}</div>
+          <div class="flex justify-between text-xl font-bold text-oxford-400 pt-4 border-t border-oxford-100">
+            <span>Total:</span>
+            <span>{{ formatCurrency(props.total) }}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <div class="text-gray-500">Amount Paid</div>
-            <div class="text-gray-900">{{ currency.symbol }}0.00</div>
+          <div class="flex justify-between text-oxford-300">
+            <span>Amount Paid:</span>
+            <span>{{ formatCurrency(0) }}</span>
           </div>
-          <div class="flex justify-between font-medium pt-2 border-t border-gray-200">
-            <div class="text-gray-900">Balance Due</div>
-            <div class="text-gray-900">{{ currency.symbol }}{{ calculateTotal.toFixed(2) }}</div>
+          <div class="flex justify-between text-xl font-bold text-oxford-400 pt-4 border-t border-oxford-100">
+            <span>Balance Due:</span>
+            <span>{{ formatCurrency(props.total) }}</span>
           </div>
         </div>
       </div>
 
       <!-- Notes -->
-      <div class="mt-8 text-sm text-gray-500">
-        <div class="font-medium mb-2">Notes</div>
+      <div class="mt-8 text-sm text-oxford-200">
         <p>Thank you for your business!</p>
       </div>
     </div>
@@ -117,10 +119,6 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  invoiceNumber: {
-    type: String,
-    default: ''
-  },
   client: {
     type: Object,
     required: true
@@ -135,21 +133,39 @@ const props = defineProps({
   },
   taxRate: {
     type: Number,
-    default: 0
+    required: true
+  },
+  date: {
+    type: String,
+    required: true
+  },
+  dueDate: {
+    type: String,
+    required: true
+  },
+  number: {
+    type: String,
+    required: true
+  },
+  subtotal: {
+    type: Number,
+    required: true
+  },
+  taxAmount: {
+    type: Number,
+    required: true
+  },
+  total: {
+    type: Number,
+    required: true
   }
 })
 
-const calculateSubtotal = computed(() => {
-  return props.items.reduce((total, item) => {
-    return total + (item.quantity * item.price)
-  }, 0)
-})
+function formatCurrency(amount) {
+  return `${props.currency.symbol}${amount.toFixed(2)}`
+}
 
-const calculateTax = computed(() => {
-  return calculateSubtotal.value * (props.taxRate / 100)
-})
-
-const calculateTotal = computed(() => {
-  return calculateSubtotal.value + calculateTax.value
-})
+function formatDate(date) {
+  return new Date(date).toLocaleDateString()
+}
 </script>
