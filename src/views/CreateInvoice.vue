@@ -140,6 +140,27 @@
                     </option>
                   </select>
                 </div>
+                <div>
+                  <label for="issueDate" class="block text-sm font-medium text-oxford-300">Issue Date</label>
+                  <input
+                    type="date"
+                    id="issueDate"
+                    v-model="invoice.date"
+                    required
+                    class="input"
+                  />
+                </div>
+                <div>
+                  <label for="dueDate" class="block text-sm font-medium text-oxford-300">Due Date</label>
+                  <input
+                    type="date"
+                    id="dueDate"
+                    v-model="invoice.dueDate"
+                    required
+                    class="input"
+                    :min="invoice.date"
+                  />
+                </div>
               </div>
             </div>
 
@@ -275,8 +296,8 @@
               :items="invoice.items"
               :currency="invoice.currency"
               :notes="invoice.notes"
-              :date="invoice.date"
-              :due-date="invoice.dueDate"
+              :date="formatDate(invoice.date)"
+              :due-date="formatDate(invoice.dueDate)"
               :tax-rate="invoice.taxRate"
               :number="invoice.number"
               :subtotal="subtotal"
@@ -291,7 +312,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import InvoicePreview from '../components/InvoicePreview.vue'
 
@@ -395,6 +416,24 @@ function updatePrice(event, item) {
     calculateItemSubtotal(item)
   }
 }
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
+
+watch(() => invoice.value.date, (newDate) => {
+  const issueDate = new Date(newDate)
+  const dueDate = new Date(invoice.value.dueDate)
+  
+  // If due date is before issue date, set it to issue date
+  if (dueDate < issueDate) {
+    invoice.value.dueDate = newDate
+  }
+})
 
 async function handleSubmit() {
   // TODO: Implement invoice submission

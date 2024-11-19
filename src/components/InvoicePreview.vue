@@ -48,14 +48,14 @@
       </div>
 
       <!-- Dates -->
-      <div class="grid grid-cols-2 gap-8 mb-8 text-sm">
+      <div class="grid grid-cols-2 gap-8 mb-8">
         <div>
-          <div class="font-medium text-oxford-400 mb-2">Issue Date</div>
-          <div class="text-oxford-400">{{ formatDate(props.date) }}</div>
+          <h3 class="font-medium text-oxford-400 mb-2">Issue Date</h3>
+          <p class="text-sm text-oxford-200">{{ formatDate(props.date) }}</p>
         </div>
         <div>
-          <div class="font-medium text-oxford-400 mb-2">Due Date</div>
-          <div class="text-oxford-400">{{ formatDate(props.dueDate) }}</div>
+          <h3 class="font-medium text-oxford-400 mb-2">Due Date</h3>
+          <p class="text-sm text-oxford-200">{{ formatDate(props.dueDate) }}</p>
         </div>
       </div>
 
@@ -185,7 +185,11 @@ function formatCurrency(amount) {
   })}`
 }
 
-function formatDate(date) {
-  return new Date(date).toLocaleDateString()
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
 }
 </script>
