@@ -251,10 +251,11 @@
                         <input
                           :id="'item-price-' + index"
                           type="text"
-                          :value="formatCurrency(item.price || 0).slice(1)"
+                          :value="item.price || ''"
                           @input="e => updatePrice(e, item)"
                           required
                           class="input pl-7"
+                          inputmode="decimal"
                         />
                       </div>
                     </div>
@@ -399,7 +400,7 @@ const total = computed(() => {
 })
 
 function formatCurrency(amount) {
-  return `${invoice.value.currency.symbol}${amount.toLocaleString('en-US', {
+  return `${invoice.value.currency.symbol}${Number(amount).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   })}`
@@ -407,10 +408,17 @@ function formatCurrency(amount) {
 
 function updatePrice(event, item) {
   // Remove any non-numeric characters except decimal point
-  const value = event.target.value.replace(/[^0-9.]/g, '')
-  // Parse the cleaned value to a number
-  const numValue = parseFloat(value)
+  let value = event.target.value.replace(/[^0-9.]/g, '')
+  
+  // Ensure only one decimal point
+  const decimalCount = (value.match(/\./g) || []).length
+  if (decimalCount > 1) {
+    const parts = value.split('.')
+    value = parts[0] + '.' + parts.slice(1).join('')
+  }
+
   // Update the item price if it's a valid number
+  const numValue = value === '' ? 0 : parseFloat(value)
   if (!isNaN(numValue)) {
     item.price = numValue
     calculateItemSubtotal(item)
