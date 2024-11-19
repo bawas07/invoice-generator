@@ -250,6 +250,21 @@
                 </div>
               </div>
             </div>
+
+            <!-- Invoice Notes -->
+            <div class="bg-white shadow rounded-lg p-6 space-y-6">
+              <h2 class="text-xl font-semibold text-oxford-400">Additional Information</h2>
+              <div>
+                <label for="invoiceNotes" class="block text-sm font-medium text-oxford-300">Notes</label>
+                <textarea
+                  id="invoiceNotes"
+                  v-model="invoice.notes"
+                  rows="4"
+                  class="input"
+                  placeholder="Enter payment instructions, bank details, or any additional information..."
+                ></textarea>
+              </div>
+            </div>
           </div>
 
           <!-- Preview Section -->
@@ -259,9 +274,10 @@
               :client="invoice.client"
               :items="invoice.items"
               :currency="invoice.currency"
-              :tax-rate="invoice.taxRate"
+              :notes="invoice.notes"
               :date="invoice.date"
               :due-date="invoice.dueDate"
+              :tax-rate="invoice.taxRate"
               :number="invoice.number"
               :subtotal="subtotal"
               :tax-amount="taxAmount"
@@ -309,6 +325,7 @@ const invoice = ref({
     code: 'USD',
     symbol: '$'
   },
+  notes: '',
   taxRate: 0,
   date: new Date().toISOString().split('T')[0],
   dueDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],

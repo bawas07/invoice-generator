@@ -110,6 +110,12 @@
         </div>
       </div>
 
+      <!-- Notes Section -->
+      <div v-if="props.notes" class="mt-8 pt-8 border-t border-oxford-100">
+        <h3 class="font-medium text-oxford-400 mb-2">Additional Information</h3>
+        <p class="text-sm text-oxford-200 whitespace-pre-wrap">{{ props.notes }}</p>
+      </div>
+
       <!-- Notes -->
       <div class="mt-8 text-sm text-oxford-200">
         <p>Thank you for your business!</p>
@@ -165,11 +171,18 @@ const props = defineProps({
   total: {
     type: Number,
     required: true
+  },
+  notes: {
+    type: String,
+    default: ''
   }
 })
 
 function formatCurrency(amount) {
-  return `${props.currency.symbol}${amount.toFixed(2)}`
+  return `${props.currency.symbol}${amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`
 }
 
 function formatDate(date) {
